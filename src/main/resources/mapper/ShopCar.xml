@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lanou.dao.ShopCarDao">
+    <resultMap type="ShopCar" id="ShopCarResult">
+        <id column="shopCarId" property="shopCarId" javaType="int"></id>
+        <result column="productId" property="productId" javaType="int"/>
+        <result column="productStatus" property="productStatus" javaType="int"/>
+        <result column="userId" property="userId" javaType="int"></result>
+        <result column="productNumber" property="productNumber" javaType="int"></result>
+
+    </resultMap>
+
+
+    <!--查看全部 购物 车-->
+    <select id="SelectAll" resultMap="ShopCarResult">
+		SELECT * FROM yiguo_shopCar
+	</select>
+
+    <!--通过userId 来展示 购物 车 商品-->
+    <select id="SelectShopCarDao" resultMap="ShopCarResult">
+        SELECT
+        *
+        FROM
+        yiguo_shopCar
+        <where>
+            userId = #{userId}
+        </where>
+
+
+    </select>
+
+    <!--增加购物车商品-->
+    <insert id="addShopCarDao" parameterType="ShopCar">
+		INSERT  INTO
+		yiguo_shopCar
+		(userId, productId,productNumber)
+		VALUES
+		(#{userId},#{productId},#{productNumber})
+
+	</insert>
+
+    <!--删除个人购物车商品-->
+    <delete id="deleteCarDao" parameterType="int">
+
+       DELETE FROM yiguo_shopCar WHERE  productId=#{0} AND userId=#{1}
+	</delete>
+    <!--修改 购买 数量-->
+    <update id="updateCarDao" parameterType="ShopCar">
+        UPDATE yiguo_shopCar
+        <trim prefix="set" suffixOverrides=","
+              suffix="where productId = #{productId} and userId=#{userId} and productStatus = 0 ">
+
+            <if test="productNumber != 0 ">
+                productNumber = #{productNumber}
+            </if>
+
+        </trim>
+
+    </update>
+    <!--结算之后 改变状态栏-->
+    <update id="updateStatus" parameterType="ShopCar">
+		UPDATE yiguo_shopCar
+		set productStatus = 1
+		where
+		productStatus = 0
+		and
+		userId = #{userId}
+	</update>
+    <!--查询以前购买过的东西-->
+    <sql id="upb">
+        userId,productId,productNumber,productStatus
+    </sql>
+    <select id="selectUserBefor" resultMap="ShopCarResult">
+          SELECT
+          <include refid="upb"/>
+          FROM
+          yiguo_shopCar
+          WHERE
+          userId = #{userId}
+          AND
+          productStatus = 1
+
+	</select>
+</mapper>

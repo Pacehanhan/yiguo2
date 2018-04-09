@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lanou.dao.UserDao">
+
+	<!-- user的resultMap -->
+	<resultMap type="User" id="UserResult">
+		<id column="userId" property="userId"/>
+		<result column="userPhone" property="userPhone"/>
+		<result column="userPassword" property="userPassword"/>
+		<result column="address" property="address"/>
+		<result column="userName" property="userName"/>
+	</resultMap>
+
+	<!-- 用户注册reg-->
+	<insert id="userReg" parameterType="User">
+		INSERT INTO yiGuo_user
+		(userPhone,userPassword,MD5Password)
+		values
+		(#{userPhone},#{userPassword},#{MD5Password})
+	</insert>
+
+	<!-- 用户登录login -->
+	<select id="userLogin" resultMap="UserResult">
+		SELECT * FROM yiGuo_user
+		WHERE
+		userPhone = #{userPhone}
+		AND
+		userPassword = #{userPassword}
+	</select>
+
+	<!--修改密码-->
+	<update id="moidfyPassWord" parameterType="Map">
+		UPDATE yiGuo_user
+		SET
+		userPassword = #{npwd}
+		<where>
+			userId= #{uId}
+			AND
+			userPassword = #{opwd}
+		</where>
+
+	</update>
+	
+	<select id="findUsePhoneUnique" parameterType="string" resultType="int">
+		SELECT 
+		count(*) FROM yiGuo_user
+		WHERE userPhone = #{userPhone}
+	</select>
+	
+</mapper>

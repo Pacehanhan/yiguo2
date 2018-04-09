@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	<context:component-scan base-package="com.lanou" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	<!-- 视图解析器，解析返回某个页面 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- prefix的value + return的字符串 + suffix的value -->
+		<!-- /resource/views/index.jsp -->
+		<property name="prefix" value="/Resource/views/"></property><!--视图的路径 -->
+		<property name="suffix" value=".jsp"></property><!-- 视图的格式 -->
+	</bean>
+	<!-- 处理静态资源 js css img -->
+	<mvc:resources location="/Resource/" mapping="/Resource/**"></mvc:resources>
+	<!-- 启动注解 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+
+	<!--拦截器-->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/user/modifyUserPassword"/>
+			
+			<bean class="com.lanou.interceptor.LoginIntercrpter"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+
+</beans>

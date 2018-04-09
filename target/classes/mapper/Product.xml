@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lanou.dao.ProductDao">
+	<resultMap type="Product" id="ProductResult">
+		<id column="productId" property="productId"/>
+		<result column="productKind" property="productKind"/>
+		<result column="productKindName" property="productKindName"/>
+		<result column="productName" property="productName"/>
+		<result column="productPrice" property="productPrice"/>
+		<result column="productMsg" property="productMsg"/>
+		<result column="productUrl" property="productUrl"></result>
+	</resultMap>
+	<!--查找所有商品-->
+	<select id="findAllProducts" resultMap="ProductResult">
+		select * from yiguo_product
+	</select>
+
+	<!--查询商品 通过商品ID-->
+	<select id="findProductsByProductId" resultMap="ProductResult" parameterType="int">
+		select * from yiguo_product WHERE productId=#{0}
+	</select>
+
+	<!--搜索查询商品,模糊查询-->
+	<select id="findProductsLike" resultMap="ProductResult" >
+		SELECT
+		*
+		FROM yiguo_product
+		<!--<where>-->
+		<!--<bind name="likeName" value='productName'/>-->
+		<!--productName = #{likeName}-->
+		<!--</where>-->
+		WHERE productMsg LIKE "%"#{productMsg}"%"
+	</select>
+	<!--模糊查询商品相关数量,分页使用-->
+	<select id="findProductsLikeCount" resultType="int">
+		SELECT  COUNT(*)  FROM  yiguo_product
+		WHERE productMsg = #{productMsg}
+	</select>
+	
+	<!--通过商品的种类 查找商品-->
+	<select id="findProductByKind" parameterType="int" resultMap="ProductResult">
+		SELECT * FROM 
+		yiguo_product
+		WHERE productKind = #{0}
+	</select>
+	
+</mapper>
